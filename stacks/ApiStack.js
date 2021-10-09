@@ -17,7 +17,8 @@ export default class ApiStack extends sst.Stack {
                 },
             },
             routes: {
-                "POST   /auth/login": "src/login.main",
+                "GET    /auth/nonce/{id}": "src/auth.nonce",
+                "POST   /auth/login": "src/auth.login",
             },
         });
 
