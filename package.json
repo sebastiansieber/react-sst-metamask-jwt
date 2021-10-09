@@ -13,8 +13,10 @@
     "@aws-cdk/assert": "1.125.0"
   },
   "dependencies": {
+    "@aws-cdk/core": "1.125.0",
     "@serverless-stack/cli": "0.45.2",
     "@serverless-stack/resources": "0.45.2",
-    "@aws-cdk/core": "1.125.0"
+    "aws-sdk": "^2.1004.0",
+    "uuid": "^7.0.3"
   }
 }

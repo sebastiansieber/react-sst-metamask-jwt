@@ -1,4 +1,5 @@
 import StorageStack from "./StorageStack";
+import ApiStack from "./ApiStack";
 
 export default function main(app) {
   // Set default runtime for all functions
@@ -6,6 +7,8 @@ export default function main(app) {
     runtime: "nodejs12.x"
   });
 
-  new StorageStack(app, "storage");
-  // Add more stacks
+  const storageStack = new StorageStack(app, "storage");
+  new ApiStack(app, "api", {
+    table: storageStack.table,
+  });
 }
