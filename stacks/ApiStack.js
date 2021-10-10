@@ -16,9 +16,11 @@ export default class ApiStack extends sst.Stack {
                     TABLE_NAME: table.tableName,
                 },
             },
+            cors: true,
             routes: {
                 "GET    /auth/nonce/{id}": "src/auth.nonce",
                 "POST   /auth/login": "src/auth.login",
+                "POST   /auth/verify": "src/auth.verify",
             },
         });
 

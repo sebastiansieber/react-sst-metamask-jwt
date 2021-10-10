@@ -3,11 +3,25 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-//import { DAppProvider } from "@usedapp/core";
+
+import { Amplify } from 'aws-amplify';
+import config from './config';
+
+Amplify.configure({
+  API: {
+    endpoints: [
+      {
+        name: "1xion",
+        endpoint: config.apiGateway.URL,
+        region: config.apiGateway.REGION
+      },
+    ]
+  }
+});
 
 ReactDOM.render(
   <React.StrictMode>
-      <App />
+    <App />
   </React.StrictMode>,
   document.getElementById('root')
 );

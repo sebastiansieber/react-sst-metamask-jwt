@@ -1,16 +1,21 @@
 import Web3 from "web3";
 import React, { useState, useEffect } from "react";
+import { API } from "aws-amplify";
+import Loading from "./Loading";
 
 function Web3Auth() {
     const [address, setAddress] = useState(null);
+    const [isLoading, setLoading] = useState(false);
     const [web3] = useState(new Web3(Web3.givenProvider || "wss://mainnet.infura.io/ws/v3/5eb86e74f5d545548bc82d1da2c60197"));
 
     async function checkAccountChange() {
         const ethereum = window.ethereum;
         if (ethereum) {
             ethereum.on('accountsChanged', accounts => {
-                setAddress(accounts[0]);
-                console.log("account change", accounts[0]);
+                if (accounts[0] == null)
+                    setAddress(null);
+                else
+                    setAddress(accounts[0].toUpperCase());
             })
         }
     }
@@ -28,18 +33,42 @@ function Web3Auth() {
         }
     }
 
-    async function signNonce() {
-        let signed = await web3.eth.personal.sign("Hello world", address, "password!");
-        console.log(signed);
+    async function identify() {
+        try {
+            setLoading(true);
+            let response = await API.post("1xion", "/auth/login", {
+                body: {
+                    id: address
+                }
+            });
+            
+            let signed = await signNonce(response.nonce);
+            console.log(signed);
+            setLoading(false);
+        } catch (e) {
+            console.error(e);
+        }
+    }
 
-        web3.eth.personal.ecRecover("Hello world", signed).then(console.log);
+    async function getNonce() {
+        try {
+            let url = "/auth/nonce/" + address;
+            let n = await API.get("1xion", url);
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    async function signNonce(n) {
+        return await web3.eth.personal.sign(n, address, "password!");
     }
 
     useEffect(() => {
         async function getAddress() {
             try {
                 let adr = await web3.eth.getAccounts();
-                setAddress(adr[0]);
+                if (adr[0] != null)
+                    setAddress(adr[0].toUpperCase());
             } catch (e) {
                 console.error(e.message);
             }
@@ -50,12 +79,15 @@ function Web3Auth() {
 
     return address ? (
         <div>
+            <Loading isLoading={isLoading} />
             <p>{address}</p>
-            <button onClick={signNonce}>Sign</button>
+            <button onClick={getNonce}>Nonce</button>
+            <button onClick={identify}>Identify</button>
         </div>
     ) : (
         <div>
             <button onClick={loginWithEth}>Login</button>
+            <p>{process.env.REACT_APP_API_URL}</p>
         </div>
     );
 }
