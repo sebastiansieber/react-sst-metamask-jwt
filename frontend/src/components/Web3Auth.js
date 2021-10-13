@@ -41,6 +41,7 @@ function Web3Auth() {
                     id: address
                 }
             });
+            console.log(response);
             
             let signed = await signNonce(response.nonce);
             console.log(signed);
