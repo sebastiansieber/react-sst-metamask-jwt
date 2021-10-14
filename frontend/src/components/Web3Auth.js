@@ -20,12 +20,12 @@ function Web3Auth() {
         }
     }
 
-    async function loginWithEth() {
+    async function login() {
         try {
             await web3.eth.requestAccounts();
         } catch (e) {
             if (e.code === 4001) {
-                // EIP-1193 userRejectedRequest error
+                // EIP-1193 userRejectedRequest error (4001)
                 console.log('Please connect to wallet.');
             } else {
                 console.error(e);
@@ -87,8 +87,7 @@ function Web3Auth() {
         </div>
     ) : (
         <div>
-            <button onClick={loginWithEth}>Login</button>
-            <p>{process.env.REACT_APP_API_URL}</p>
+            <button onClick={login}>Login</button>
         </div>
     );
 }
