@@ -8,18 +8,20 @@ function Web3Auth() {
     const [isLoading, setLoading] = useState(false);
     const [web3] = useState(new Web3(Web3.givenProvider || "wss://mainnet.infura.io/ws/v3/5eb86e74f5d545548bc82d1da2c60197"));
 
+    // Listen to account changes in MetaMask
     async function checkAccountChange() {
         const ethereum = window.ethereum;
         if (ethereum) {
-            ethereum.on('accountsChanged', accounts => {
-                if (accounts[0] == null)
+            ethereum.on('accountsChanged', adr => {
+                if (adr[0] == null)
                     setAddress(null);
                 else
-                    setAddress(accounts[0].toUpperCase());
+                    setAddress(adr[0].toLowerCase());
             })
         }
     }
 
+    // Trigger login with MetaMask
     async function login() {
         try {
             await web3.eth.requestAccounts();
@@ -33,6 +35,13 @@ function Web3Auth() {
         }
     }
 
+    // Trigger MetaMask to sign nonce
+    async function signNonce(n) {
+        console.log(n);
+        return await web3.eth.personal.sign(n, address, "1xion");
+    }
+
+    // Authenticate user with backend
     async function identify() {
         try {
             setLoading(true);
@@ -41,9 +50,9 @@ function Web3Auth() {
                     id: address
                 }
             });
-            console.log(response);
             
-            let signed = await signNonce(response.nonce);
+            let nonce = response.nonce.toString();
+            let signed = await signNonce(nonce);
             console.log(signed);
             setLoading(false);
         } catch (e) {
@@ -51,25 +60,13 @@ function Web3Auth() {
         }
     }
 
-    async function getNonce() {
-        try {
-            let url = "/auth/nonce/" + address;
-            let n = await API.get("1xion", url);
-        } catch (e) {
-            console.error(e);
-        }
-    }
-
-    async function signNonce(n) {
-        return await web3.eth.personal.sign(n, address, "password!");
-    }
-
+    // Constructor to check if wallet is already connected and start listener for account changes
     useEffect(() => {
         async function getAddress() {
             try {
                 let adr = await web3.eth.getAccounts();
                 if (adr[0] != null)
-                    setAddress(adr[0].toUpperCase());
+                    setAddress(adr[0].toLocaleLowerCase());
             } catch (e) {
                 console.error(e.message);
             }
@@ -78,11 +75,11 @@ function Web3Auth() {
         checkAccountChange();
     }, [web3.eth]);
 
+    // Render output
     return address ? (
         <div>
             <Loading isLoading={isLoading} />
             <p>{address}</p>
-            <button onClick={getNonce}>Nonce</button>
             <button onClick={identify}>Identify</button>
         </div>
     ) : (

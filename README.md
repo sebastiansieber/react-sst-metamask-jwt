@@ -1,4 +1,4 @@
-# Getting Started with Serverless Stack (SST)
+# Authentication with MetaMask and JWT using Serverless Stack (SST)
 
 This project was bootstrapped with [Create Serverless Stack](https://docs.serverless-stack.com/packages/create-serverless-stack).
 

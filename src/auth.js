@@ -1,4 +1,3 @@
-//import * as uuid from "uuid";
 import handler from "./util/handler";
 import dynamoDb from "./util/dynamodb";
 import * as ethUtil from "ethereumjs-util";
@@ -11,7 +10,6 @@ export const login = handler(async (event) => {
         TableName: process.env.TABLE_NAME,
         Item: {
             publicAddress: data.id,
-            //nonce: uuid.v1(),
             nonce: "0x" + crypto.randomBytes(16).toString('hex'),
             lastLogin: Date.now(),
         },
@@ -52,10 +50,7 @@ export const verify = handler(async (event) => {
         signatureParams.s
     );
     const addressBuffer = ethUtil.publicToAddress(publicKey);
-    const publicAddress = ethUtil.bufferToHex(addressBuffer).toUpperCase();
-
-    console.log(publicAddress);
-    console.log(address);
+    const publicAddress = ethUtil.bufferToHex(addressBuffer);
 
     if (publicAddress === address) {
         return result.Item;
