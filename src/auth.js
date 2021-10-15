@@ -1,6 +1,26 @@
 import handler from "./util/handler";
 import dynamoDb from "./util/dynamodb";
 import * as ethUtil from "ethereumjs-util";
+import jwt from 'jsonwebtoken';
+
+const createToken = (publicAddress) => {
+    return new Promise((resolve, reject) => {
+
+        let payload = {
+            publicAddress: publicAddress
+        };
+
+        let options = {
+            expiresIn: process.env.JWT_EXPIRES_IN
+        };
+
+        jwt.sign(payload, process.env.JWT_SECRET, options, (error, token) => {
+            if (error) reject(error);
+            resolve(token);
+        });
+
+    });
+};
 
 export const login = handler(async (event) => {
     const data = JSON.parse(event.body);
@@ -53,9 +73,18 @@ export const verify = handler(async (event) => {
     const publicAddress = ethUtil.bufferToHex(addressBuffer);
 
     if (publicAddress === address) {
-        return result.Item;
+        const token = createToken(address);
+        return ({
+            auth: true,
+            token: token
+        });
+        //return result.Item;
     } else {
-        throw new Error("User not verified.");
+        //throw new Error("User not verified.");
+        return ({
+            auth: false,
+            token: ''
+        });
     }
 });
 

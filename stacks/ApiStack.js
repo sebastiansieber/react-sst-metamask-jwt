@@ -14,6 +14,8 @@ export default class ApiStack extends sst.Stack {
             defaultFunctionProps: {
                 environment: {
                     TABLE_NAME: table.tableName,
+                    JWT_SECRET: "1xion-secret-jwt-2021-10-15",
+                    JWT_EXPIRES_IN: "7d"
                 },
             },
             cors: true,

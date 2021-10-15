@@ -63,7 +63,15 @@ function Web3Auth() {
 
             let nonce = response.nonce.toString();
             let signed = await signNonce(nonce);
-            console.log(signed);
+
+            let res = await API.post("1xion", "/auth/verify", {
+                body: {
+                    address: address,
+                    signature: signed,
+                }
+            });
+
+            console.log(res);
             setLoading(false);
         } catch (e) {
             console.error(e);
