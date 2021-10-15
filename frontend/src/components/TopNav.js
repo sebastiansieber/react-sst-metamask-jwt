@@ -16,10 +16,10 @@ function TopNav() {
             <Navbar.Collapse className="justify-content-end">
                 <Nav activeKey={window.location.pathname}>
                     <LinkContainer to="/">
-                        <Nav.Link>Signup</Nav.Link>
+                        <Nav.Link>Public</Nav.Link>
                     </LinkContainer>
-                    <LinkContainer to="/login">
-                        <Nav.Link>Login</Nav.Link>
+                    <LinkContainer to="/private">
+                        <Nav.Link>Private</Nav.Link>
                     </LinkContainer>
                 </Nav>
             </Navbar.Collapse>

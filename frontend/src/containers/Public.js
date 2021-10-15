@@ -1,10 +1,11 @@
 import React from "react";
+import "./Public.css";
 
-export default function Home() {
+export default function Public() {
     return (
-        <div className="Home">
+        <div className="Public">
             <div className="lander">
-                <h1>1xion</h1>
+                <h1>Public</h1>
                 <p className="text-muted">A simple dApp</p>
             </div>
         </div>

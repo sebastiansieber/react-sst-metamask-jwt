@@ -1,15 +1,22 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
 
-import Home from "./containers/Home";
+import AuthenticatedRoute from "./components/AuthenticatedRoute";
+import UnauthenticatedRoute from "./components/UnauthenticatedRoute";
+
 import NotFound from "./containers/NotFound";
+import Private from "./containers/Private";
+import Public from "./containers/Public";
 
 export default function Routes() {
     return (
         <Switch>
             <Route exact path="/">
-                <Home />
+                <Public />
             </Route>
+            <AuthenticatedRoute exact path="/private">
+                <Private />
+            </AuthenticatedRoute>
             {/* Finally, catch all unmatched routes */}
             <Route>
                 <NotFound />
