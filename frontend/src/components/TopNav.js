@@ -8,9 +8,6 @@ function TopNav() {
 
     return (
         <Navbar collapseOnSelect bg="light" expand="md" className="mb-3">
-            <Navbar.Brand href="/" className="font-weight-bold text-muted">
-                1xion
-            </Navbar.Brand>
             <Web3Auth />
             <Navbar.Toggle />
             <Navbar.Collapse className="justify-content-end">

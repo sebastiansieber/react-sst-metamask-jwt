@@ -1,6 +1,8 @@
 import './App.css';
 import React, { useState, useEffect } from "react";
+
 import { AppContext } from "./lib/contextLib";
+import { isLocalUser } from "./lib/localAuth";
 
 import Routes from "./Routes";
 import TopNav from "./components/TopNav";
@@ -10,12 +12,14 @@ function App() {
   const [isAuthenticating, setIsAuthenticating] = useState(true);
 
   async function onLoad() {
+    console.log("onLoad: " + isAuthenticated);
+
     try {
-      //await Auth.currentSession();
-      // need to load login information from browser session!
-      userHasAuthenticated(false);
-    }
-    catch (e) {
+      if (isLocalUser())
+        userHasAuthenticated(true);
+      else
+        userHasAuthenticated(false);
+    } catch (e) {
       if (e !== 'No current user') {
         console.error(e);
       }

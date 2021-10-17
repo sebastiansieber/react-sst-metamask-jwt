@@ -3,24 +3,17 @@ import dynamoDb from "./util/dynamodb";
 import * as ethUtil from "ethereumjs-util";
 import jwt from 'jsonwebtoken';
 
-const createToken = (publicAddress) => {
-    return new Promise((resolve, reject) => {
-
+function createToken (address) {
         let payload = {
-            publicAddress: publicAddress
+            publicAddress: address
         };
 
         let options = {
             expiresIn: process.env.JWT_EXPIRES_IN
         };
 
-        jwt.sign(payload, process.env.JWT_SECRET, options, (error, token) => {
-            if (error) reject(error);
-            resolve(token);
-        });
-
-    });
-};
+        return jwt.sign(payload, process.env.JWT_SECRET, options);
+}
 
 export const login = handler(async (event) => {
     const data = JSON.parse(event.body);
@@ -34,9 +27,8 @@ export const login = handler(async (event) => {
             lastLogin: Date.now(),
         },
     };
-
+    
     await dynamoDb.put(params);
-
     return params.Item;
 });
 
@@ -74,32 +66,15 @@ export const verify = handler(async (event) => {
 
     if (publicAddress === address) {
         const token = createToken(address);
+        console.log(token);
         return ({
             auth: true,
             token: token
         });
-        //return result.Item;
     } else {
-        //throw new Error("User not verified.");
         return ({
             auth: false,
             token: ''
         });
     }
-});
-
-export const nonce = handler(async (event) => {
-    const params = {
-        TableName: process.env.TABLE_NAME,
-        Key: {
-            publicAddress: event.pathParameters.id,
-        },
-    };
-
-    const result = await dynamoDb.get(params);
-    if (!result.Item) {
-        throw new Error("Item not found.");
-    }
-
-    return result.Item;
 });
