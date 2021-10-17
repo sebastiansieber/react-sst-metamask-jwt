@@ -1,5 +1,5 @@
 import './App.css';
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 import { AppContext } from "./lib/contextLib";
 import { isLocalUser } from "./lib/localAuth";
@@ -8,33 +8,38 @@ import Routes from "./Routes";
 import TopNav from "./components/TopNav";
 
 function App() {
-  const [isAuthenticated, userHasAuthenticated] = useState(false);
+  const [isAuthenticated, setAuthenticated] = useState(false);
   const [isAuthenticating, setIsAuthenticating] = useState(true);
+  const initial = useRef(false);
 
-  async function onLoad() {
-    console.log("onLoad: " + isAuthenticated);
-
+  useEffect(() => {
+    console.log("Constructor");
     try {
-      if (isLocalUser())
-        userHasAuthenticated(true);
-      else
-        userHasAuthenticated(false);
+      if (isLocalUser()) {
+        initial.current = true;
+        console.log("setAuthenticated true");
+        setAuthenticated(true);
+      } else {
+        setAuthenticated(false);
+      }
     } catch (e) {
       if (e !== 'No current user') {
         console.error(e);
       }
     }
-
-    setIsAuthenticating(false);
-  }
+  }, []);
 
   useEffect(() => {
-    onLoad();
-  }, []);
+    console.log("isAuthenticated changed: " + isAuthenticated + " - initial: " + initial.current);
+    if (initial.current)
+      initial.current = false;
+    else
+      setIsAuthenticating(false);
+  }, [isAuthenticated]);
 
   return window.ethereum && !isAuthenticating ? (
     <div className="App container py-3">
-      <AppContext.Provider value={{ isAuthenticated, userHasAuthenticated }}>
+      <AppContext.Provider value={{ isAuthenticated, setAuthenticated }}>
         <TopNav />
         <Routes />
       </AppContext.Provider>

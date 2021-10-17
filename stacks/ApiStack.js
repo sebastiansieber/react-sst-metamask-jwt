@@ -1,4 +1,5 @@
 import * as sst from "@serverless-stack/resources";
+//import HttpJwtAuthorizer from "@aws-cdk/aws-apigatewayv2-authorizers";
 
 export default class ApiStack extends sst.Stack {
     // Public reference to the API
@@ -19,10 +20,19 @@ export default class ApiStack extends sst.Stack {
                 },
             },
             cors: true,
+            /*defaultAuthorizer: new HttpJwtAuthorizer({
+                jwtAudience: ["UsGRQJJz5sDfPQDs6bhQ9Oc3hNISuVif"],
+                jwtIssuer: "https://myorg.us.auth0.com",
+            }),*/
             routes: {
-                //"GET    /auth/nonce/{id}": "src/auth.nonce",
+                "POST   /auth/nonce": "src/auth.nonce",
                 "POST   /auth/login": "src/auth.login",
+                "GET    /auth/me/{id}": "src/auth.me",
                 "POST   /auth/verify": "src/auth.verify",
+                "GET    /auth/secure": {
+                    //authorizationType: sst.ApiAuthorizationType.JWT,
+                    function: "src/auth.secure",
+                },
             },
         });
 

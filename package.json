@@ -17,6 +17,7 @@
     "@serverless-stack/cli": "0.47.0",
     "@serverless-stack/resources": "0.47.0",
     "aws-sdk": "^2.1004.0",
+    "cookie": "^0.4.1",
     "ethereumjs-util": "^7.1.2"
   }
 }

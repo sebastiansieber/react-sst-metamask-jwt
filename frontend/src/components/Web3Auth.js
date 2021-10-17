@@ -1,18 +1,19 @@
 import Web3 from "web3";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useHistory } from "react-router-dom";
 import { API } from "aws-amplify";
 import Status from "./Status";
 import Button from "react-bootstrap/Button";
 
 import { useAppContext } from "../lib/contextLib";
-import { setLocalUser } from "../lib/localAuth";
+import { removeLocalUser, setLocalUser } from "../lib/localAuth";
 
 function Web3Auth() {
-    const { isAuthenticated, userHasAuthenticated } = useAppContext();
+    const { isAuthenticated, setAuthenticated } = useAppContext();
     const [address, setAddress] = useState(null);
-
     const [isLoading, setLoading] = useState(false);
+    const initial = useRef(true);
+
     const history = useHistory();
     const web3 = new Web3(Web3.givenProvider);
 
@@ -54,11 +55,11 @@ function Web3Auth() {
     async function identify() {
         setLoading(true);
 
-        console.log("isAuthenticated: " + isAuthenticated);
+        console.log("Identify -- isAuthenticated: " + isAuthenticated);
 
         if (!isAuthenticated) {
             try {
-                let response = await API.post("1xion", "/auth/login", {
+                let response = await API.post("1xion", "/auth/nonce", {
                     body: {
                         id: address
                     }
@@ -67,7 +68,7 @@ function Web3Auth() {
                 let nonce = response.nonce.toString();
                 let signed = await signNonce(nonce);
 
-                let res = await API.post("1xion", "/auth/verify", {
+                let res = await API.post("1xion", "/auth/login", {
                     body: {
                         address: address,
                         signature: signed,
@@ -76,9 +77,9 @@ function Web3Auth() {
 
                 console.log("JWT:");
                 console.log(res);
-                if (res.auth = true) {
+                if (res.auth === true) {
                     setLocalUser(res.token);
-                    userHasAuthenticated(true);
+                    setAuthenticated(true);
                 }
             } catch (e) {
                 console.error(e);
@@ -108,19 +109,23 @@ function Web3Auth() {
     }, []);
 
     useEffect(() => {
-        console.log("AddressChangedHook:");
-        console.log(address);
-        if (address == null) {
-            userHasAuthenticated(false);
-            history.push("/");
+        if (initial.current) {
+            initial.current = false;
         } else {
-            console.log("Authenticate:");
+            console.log("AddressChangedHook:");
             console.log(address);
-            identify();
-            userHasAuthenticated(true);
-            history.push("/private");
+            if (address == null) {
+                setAuthenticated(false);
+                removeLocalUser();
+                history.push("/");
+            } else {
+                console.log("Authenticate:");
+                console.log(address);
+                identify();
+                setAuthenticated(true);
+                history.push("/private");
+            }
         }
-        checkAccountChange();
     }, [address]);
 
     // Render output
