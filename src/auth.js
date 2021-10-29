@@ -3,6 +3,7 @@ import dynamoDb from "./util/dynamodb";
 import * as ethUtil from "ethereumjs-util";
 import jwt from "jsonwebtoken";
 import cookie from "cookie";
+import crypto from "crypto";
 
 function createToken(address) {
     let payload = {
@@ -23,10 +24,6 @@ function serializeToken(token) {
         path: "/",
     });
 }
-
-/*function clearCookie() {
-    return "jwt=deleted; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-}*/
 
 function getUserFromToken(token) {
     //const secret = Buffer.from(process.env.JWT_SECRET, "base64");
@@ -85,7 +82,6 @@ export async function me(event) {
 
 export const nonce = handler(async (event) => {
     const data = JSON.parse(event.body);
-    const crypto = require("crypto");
 
     const params = {
         TableName: process.env.TABLE_NAME,

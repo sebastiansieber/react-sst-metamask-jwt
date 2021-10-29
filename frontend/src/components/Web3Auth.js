@@ -48,7 +48,8 @@ function Web3Auth() {
 
     // Trigger MetaMask to sign nonce
     async function signNonce(n) {
-        return await web3.eth.personal.sign(n, address, "1xion");
+        let message = web3.utils.utf8ToHex(n);
+        return await web3.eth.personal.sign(message, address, "1xion");
     }
 
     // Authenticate user with backend
