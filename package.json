@@ -14,8 +14,8 @@
   },
   "dependencies": {
     "@aws-cdk/core": "1.126.0",
-    "@serverless-stack/cli": "0.48.0",
-    "@serverless-stack/resources": "0.48.0",
+    "@serverless-stack/cli": "0.50.1",
+    "@serverless-stack/resources": "0.50.1",
     "aws-sdk": "^2.1004.0",
     "cookie": "^0.4.1",
     "ethereumjs-util": "^7.1.2"
