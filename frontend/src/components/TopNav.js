@@ -13,7 +13,7 @@ function TopNav() {
             <Navbar.Collapse className="justify-content-end">
                 <Nav activeKey={window.location.pathname}>
                     <LinkContainer to="/">
-                        <Nav.Link>Public</Nav.Link>
+                        <Nav.Link>Home</Nav.Link>
                     </LinkContainer>
                     <LinkContainer to="/private">
                         <Nav.Link>Private</Nav.Link>

@@ -27,7 +27,6 @@ export default class ApiStack extends sst.Stack {
             routes: {
                 "POST   /auth/nonce": "src/auth.nonce",
                 "POST   /auth/login": "src/auth.login",
-                "GET    /auth/me/{id}": "src/auth.me",
                 "POST   /auth/verify": "src/auth.verify",
                 "GET    /auth/secure": {
                     //authorizationType: sst.ApiAuthorizationType.JWT,

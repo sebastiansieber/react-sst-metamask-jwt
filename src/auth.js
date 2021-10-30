@@ -2,7 +2,6 @@ import handler from "./util/handler";
 import dynamoDb from "./util/dynamodb";
 import * as ethUtil from "ethereumjs-util";
 import jwt from "jsonwebtoken";
-import cookie from "cookie";
 import crypto from "crypto";
 
 function createToken(address) {
@@ -17,22 +16,10 @@ function createToken(address) {
     return jwt.sign(payload, process.env.JWT_SECRET, options);
 }
 
-function serializeToken(token) {
-    return cookie.serialize("jwt", token, {
-        secure: false, // need to check that
-        httpOnly: true,
-        path: "/",
-    });
-}
-
 function getUserFromToken(token) {
     //const secret = Buffer.from(process.env.JWT_SECRET, "base64");
     //return jwt.verify(token.replace("Bearer ", ""), process.env.JWT_SECRET);
     return jwt.verify(token, process.env.JWT_SECRET);
-}
-
-export function check() {
-    return false;
 }
 
 export const secure = handler(async () => {
@@ -48,40 +35,9 @@ export const verify = handler(async (event) => {
     }
 });
 
-export async function me(event) {
-    //const address = getUserFromToken(event.headers.Authorization);
-    const address = event.pathParameters.id
-    let statusCode, headers, body;
-
-    const params = {
-        TableName: process.env.TABLE_NAME,
-        Key: {
-            publicAddress: address,
-        },
-    };
-
-    const result = await dynamoDb.get(params);
-    if (!result.Item) {
-        throw new Error("Item not found.");
-    }
-
-    body = result.Item;
-    statusCode = 200;
-    headers = {
-        "Set-Cookie": serializeToken(createToken(address)),
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Credentials": true,
-    };
-
-    return {
-        statusCode,
-        body: JSON.stringify(body),
-        headers: headers,
-    };
-}
-
 export const nonce = handler(async (event) => {
     const data = JSON.parse(event.body);
+    console.log(data.id);
 
     const params = {
         TableName: process.env.TABLE_NAME,
