@@ -1,44 +1,21 @@
 # Authentication with MetaMask and JWT using Serverless Stack (SST)
 
-This project was bootstrapped with [Create Serverless Stack](https://docs.serverless-stack.com/packages/create-serverless-stack).
+If you have any questions or interest in this project, please get in touch with me.
+Email: sebastian.sieber@gmail.com
+Discord: sebo#7943
 
-Start by installing the dependencies.
+## Backend
 
-```bash
-$ npm install
-```
+### `npm install`
+### `npx sst start`
 
-## Commands
+Deploy the infrastructure and starts the local Lambda development environment.
 
-### `npm run start`
+## Frontend
 
-Starts the local Lambda development environment.
+### `cd fronend/`
+### `npm install`
+### `npm start`
 
-### `npm run build`
-
-Build your app and synthesize your stacks.
-
-Generates a `.build/` directory with the compiled files and a `.build/cdk.out/` directory with the synthesized CloudFormation stacks.
-
-### `npm run deploy [stack]`
-
-Deploy all your stacks to AWS. Or optionally deploy, a specific stack.
-
-### `npm run remove [stack]`
-
-Remove all your stacks and all of their resources from AWS. Or optionally removes, a specific stack.
-
-### `npm run test`
-
-Runs your tests using Jest. Takes all the [Jest CLI options](https://jestjs.io/docs/en/cli).
-
-## Documentation
-
-Learn more about the Serverless Stack.
-- [Docs](https://docs.serverless-stack.com)
-- [@serverless-stack/cli](https://docs.serverless-stack.com/packages/cli)
-- [@serverless-stack/resources](https://docs.serverless-stack.com/packages/resources)
-
-## Community
-
-[Follow us on Twitter](https://twitter.com/ServerlessStack) or [post on our forums](https://discourse.serverless-stack.com).
+Runs the app in the development mode.\
+Open [http://localhost:3000](http://localhost:3000) to view it in the browser..

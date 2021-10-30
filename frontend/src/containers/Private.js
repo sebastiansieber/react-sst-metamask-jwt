@@ -3,10 +3,8 @@ import { API } from "aws-amplify";
 import "./Private.css";
 import Button from "react-bootstrap/Button";
 import Alert from "react-bootstrap/Alert";
-import { useAppContext } from "../lib/contextLib";
 
 export default function Private() {
-    const { isAuthenticated } = useAppContext();
     const [user, setUser] = useState(null);
 
     async function verify() {
@@ -29,13 +27,8 @@ export default function Private() {
         <div className="Private">
             <div className="lander">
                 <h1>Private</h1>
-                <p className="text-muted">Verify JWT</p>
-                <Button onClick={verify}>Who am I</Button>
                 <Alert variant="primary">
-                    {user}
-                </Alert>
-                <Alert variant="danger">
-                    {isAuthenticated.toString()}
+                    <Button onClick={verify}>Verify JWT</Button><div>{user}</div>
                 </Alert>
             </div>
         </div>

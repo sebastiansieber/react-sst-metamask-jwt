@@ -45,7 +45,6 @@ function Web3Auth() {
         setLoading(true);
 
         if (isLocalUser()) {
-            console.log(true);
             setAuthenticated(true);
         } else {
             if (!isAuthenticated) {

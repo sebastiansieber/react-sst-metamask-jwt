@@ -6,7 +6,6 @@ export default function Public() {
         <div className="Public">
             <div className="lander">
                 <h1>Public</h1>
-                <p className="text-muted">A simple dApp</p>
             </div>
         </div>
     );
