@@ -11,6 +11,9 @@ import { removeLocalUser, setLocalUser, isLocalUser } from "../lib/localAuth";
 function Web3Auth() {
     const { isAuthenticated, setAuthenticated } = useAppContext();
     const [address, setAddress] = useState(null);
+    const [network, setNetwork] = useState(null);
+    const [balance, setBalance] = useState(null);
+    const [ens, setEns] = useState(null);
     const [isLoading, setLoading] = useState(false);
     const initRun = useRef(true);
 
@@ -24,7 +27,7 @@ function Web3Auth() {
         const ethereum = window.ethereum;
 
         try {
-            await ethereum.request({method: 'eth_requestAccounts'});
+            await ethereum.request({ method: 'eth_requestAccounts' });
         } catch (e) {
             if (e.code === 4001) {
                 // EIP-1193 userRejectedRequest error (4001)
@@ -74,12 +77,20 @@ function Web3Auth() {
                 }
             }
         }
+
+        setNetwork(await signer.getChainId());
+        setBalance(ethers.utils.formatEther(await signer.getBalance()));
+        setEns(await provider.lookupAddress(address));
+
         history.push("/private");
         setLoading(false);
     }
 
     function handleLogout() {
         setAddress(null);
+        setEns(null);
+        setBalance(null);
+        setNetwork(null);
         setAuthenticated(false);
         removeLocalUser();
         history.push("/");
@@ -130,7 +141,7 @@ function Web3Auth() {
     return address ? (
         <div>
             <Status address={address} isLoading={isLoading} />
-            <p>{address}</p>
+            <p>{address}, {ens}, {network}, {balance} ETH</p>
         </div>
     ) : (
         <div>
