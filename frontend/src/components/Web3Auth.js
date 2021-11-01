@@ -11,6 +11,7 @@ import { removeLocalUser, setLocalUser, isLocalUser } from "../lib/localAuth";
 function Web3Auth() {
     const { isAuthenticated, setAuthenticated } = useAppContext();
     const [address, setAddress] = useState(null);
+    const [shortAddress, setShortAddress] = useState(null);
     const [network, setNetwork] = useState(null);
     const [balance, setBalance] = useState(null);
     const [ens, setEns] = useState(null);
@@ -24,6 +25,7 @@ function Web3Auth() {
 
     // Trigger MetaMask to connect
     async function connectMetaMask() {
+        setLoading(true);
         const ethereum = window.ethereum;
 
         try {
@@ -36,6 +38,7 @@ function Web3Auth() {
                 console.error(e);
             }
         }
+        setLoading(false);
     }
 
     // Trigger MetaMask to sign nonce
@@ -78,33 +81,53 @@ function Web3Auth() {
             }
         }
 
-        setNetwork(await signer.getChainId());
+        setNetwork((await provider.getNetwork(await signer.getChainId())).name);
         setBalance(ethers.utils.formatEther(await signer.getBalance()));
         setEns(await provider.lookupAddress(address));
 
         history.push("/private");
+
         setLoading(false);
     }
 
     function handleLogout() {
+        setLoading(true);
         setAddress(null);
+        setShortAddress(null);
         setEns(null);
         setBalance(null);
         setNetwork(null);
         setAuthenticated(false);
         removeLocalUser();
         history.push("/");
+        setLoading(false);
     }
 
     // Constructor to check if wallet is already connected and start listener for account changes
     useEffect(() => {
+        setLoading(true);
         const ethereum = window.ethereum;
+
+        function setAdr(adr) {
+            setAddress(adr);
+            setShortAddress(
+                `${adr.slice(0, 6)}...${adr.slice(
+                    adr.length - 4,
+                    adr.length
+                )}`
+            );
+        }
+
+        function clearAdr() {
+            setAddress(null);
+            setShortAddress(null);
+        }
 
         // Listen to account changes in MetaMask
         async function checkAccountChange() {
             if (ethereum) {
                 ethereum.on('accountsChanged', adr => {
-                    setAddress(adr[0]);
+                    setAdr(adr[0].toLowerCase());
                 })
             }
         }
@@ -113,9 +136,9 @@ function Web3Auth() {
             try {
                 let adr = await provider.listAccounts();
                 if (adr[0] == null)
-                    setAddress(null)
+                    clearAdr();
                 else
-                    setAddress(adr[0].toLowerCase());
+                    setAdr(adr[0].toLowerCase());
             } catch (e) {
                 console.error(e.message);
             }
@@ -123,10 +146,12 @@ function Web3Auth() {
 
         getAddress();
         checkAccountChange();
+        setLoading(false);
     }, []);
 
     // Whenever address changes
     useEffect(() => {
+        setLoading(true);
         if (initRun.current) {
             initRun.current = false;
         } else {
@@ -135,13 +160,14 @@ function Web3Auth() {
             else
                 handleLogout();
         }
+        setLoading(false);
     }, [address]);
 
     // Render output
     return address ? (
         <div>
             <Status address={address} isLoading={isLoading} />
-            <p>{address}, {ens}, {network}, {balance} ETH</p>
+            <p>{ens ? ens : shortAddress} : {balance} ETH ({network})</p>
         </div>
     ) : (
         <div>

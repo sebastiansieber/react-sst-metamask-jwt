@@ -37,7 +37,6 @@ export const verify = handler(async (event) => {
 
 export const nonce = handler(async (event) => {
     const data = JSON.parse(event.body);
-    console.log(data.id);
 
     const params = {
         TableName: process.env.TABLE_NAME,

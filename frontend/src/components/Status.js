@@ -21,7 +21,7 @@ function Status(props) {
         switch (props.address) {
             case null:
                 return (
-                    <Button variant="success" disabled>
+                    <Button variant="danger" disabled>
                         <BsFillXCircleFill />
                     </Button >
                 );
